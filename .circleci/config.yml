@@ -35,4 +35,7 @@ jobs:
           command: cd $HOME/www; export JEKYLL_ENV=production; nohup bundle exec rake html:serve_website -- --background --ssl-key jekyll-netlify-circleci.io.key --ssl-cert jekyll-netlify-circleci.io --nohup
       - run:
           name: Running HTML Proofer
-          command: bundle exec rake test:proof_website -- --format=junit --output-file=$CIRCLE_TEST_REPORTS/www.xml
+          command: cd $HOME/www; mkdir tmp; bundle exec rake test:proof_website -- --format=junit --output-file=$HOME/tmp/www.xml
+
+      - store_artifacts:
+          path: ~/www/tmp

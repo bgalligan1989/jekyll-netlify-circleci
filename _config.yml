@@ -42,6 +42,12 @@ sass:
 # Compress HTML (in liquid via layouts/compress.html)
 compress_html:
   clippings: all
+  ignore:
+    envs:
+      - development  
+
+plugins:
+  - jekyll-sitemap
 
 # set some common post defaults
 defaults:
