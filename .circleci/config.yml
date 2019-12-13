@@ -1,0 +1,38 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/www
+    docker:
+      - image: circleci/ruby:2.6.5-buster
+    environment:
+      TZ: "/usr/share/zoneinfo/America/Los_Angeles"
+    steps:
+      - checkout
+      - run:
+          name: Prepare NodeJS
+          command: curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
+      - run:
+          name: Install NodeJS
+          command: sudo apt-get install -y nodejs build-essential
+      - run:
+          name: Install UglifyJS
+          command: sudo npm install uglify-js -g
+      - run:
+          name: Install UglifyCSS
+          command: sudo npm install uglifycss -g
+      - run:
+          name: Install Bundler 2.x
+          command: sudo gem install bundler -v "$(grep -A 1 "BUNDLED WITH" Gemfile.lock | tail -n 1)"
+
+      - run:
+          name: Create Self-Signed SSL Cert
+          command: cd; openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=jekyll-netlify-circleci.io" -keyout ~/www/jekyll-netlify-circleci.io.key -out ~/www/jekyll-netlify-circleci.io
+      - run:
+          name: Install Jekyll
+          command: cd $HOME/www; bundle install
+      - run:
+          name: Build Web Site (Jekyll)
+          command: cd $HOME/www; export JEKYLL_ENV=production; nohup bundle exec rake html:serve_website -- --background --ssl-key jekyll-netlify-circleci.io.key --ssl-cert jekyll-netlify-circleci.io --nohup
+      - run:
+          name: Running HTML Proofer
+          command: bundle exec rake test:proof_website -- --format=junit --output-file=$CIRCLE_TEST_REPORTS/www.xml
