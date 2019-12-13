@@ -184,20 +184,23 @@ namespace :html do
 		end
 
 		#compression_command = sprintf("cat %s | %s --type %s", assets_to_compress.join(' '), uglify_cmd, options[:type])
-		if options[:type] == 'js'
-			compression_command = sprintf("uglifyjs %s --compress --mangle", assets_to_compress.join(' '))
-		else
-			compression_command = sprintf("uglifycss %s", assets_to_compress.join(' '))
-		end
+		if assets_to_compress.length > 0
+			if options[:type] == 'js'
+				compression_command = sprintf("uglifyjs %s --compress --mangle", assets_to_compress.join(' '))
+			else
+				compression_command = sprintf("uglifycss %s", assets_to_compress.join(' '))
+			end
 
-		compression_result = `#{compression_command}`
 
-		if compression_result.length == 0
-			raise 'It looks like there was a problem with compressing the ' + options[:type] + ' files.'
-		end
+			compression_result = `#{compression_command}`
 
-		File.open sprintf('./_site/%s/www-min.%s', options[:type], options[:type]), 'w' do |file|
-			file.write(compression_result)
+			if compression_result.length == 0
+				raise 'It looks like there was a problem with compressing the ' + options[:type] + ' files.'
+			end
+
+			File.open sprintf('./_site/%s/www-min.%s', options[:type], options[:type]), 'w' do |file|
+				file.write(compression_result)
+			end
 		end
 	end
 end
