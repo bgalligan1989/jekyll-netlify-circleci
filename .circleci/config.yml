@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: ~/www
     docker:
-      - image: circleci/ruby:2.4.2-stretch
+      - image: circleci/ruby:2.6.5-buster
     environment:
       TZ: "/usr/share/zoneinfo/America/Los_Angeles"
     steps:
@@ -22,19 +22,20 @@ jobs:
           command: sudo npm install uglifycss -g
       - run:
           name: Install Bundler 2.x
-          command: gem update --system; gem install bundler -v "$(grep -A 1 "BUNDLED WITH" Gemfile.lock | tail -n 1)"
-#          command: gem install bundler -v "~>2.0"
+          command: gem install bundler -v "$(grep -A 1 "BUNDLED WITH" Gemfile.lock | tail -n 1)"
+          # command: gem update --system; 
+          # command: gem install bundler -v "~>2.0"
 
       - run:
           name: Create Self-Signed SSL Cert
           command: cd; openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=jekyll-netlify-circleci.io" -keyout ~/www/jekyll-netlify-circleci.io.key -out ~/www/jekyll-netlify-circleci.io
       - run:
           name: Install Jekyll
-          command: cd $HOME/www; sudo bundle install
+          command: cd $HOME/www; bundle install
           #command: cd $HOME/www; bundle install
       - run:
           name: Build Web Site (Jekyll)
-          command: cd $HOME/www; export JEKYLL_ENV=production; sudo nohup bundle exec rake html:serve_website -- --background --ssl-key jekyll-netlify-circleci.io.key --ssl-cert jekyll-netlify-circleci.io --nohup
+          command: cd $HOME/www; export JEKYLL_ENV=production; nohup bundle exec rake html:serve_website -- --background --ssl-key jekyll-netlify-circleci.io.key --ssl-cert jekyll-netlify-circleci.io --nohup
       - run:
           name: Running HTML Proofer
-          command: sudo bundle exec rake test:proof_website -- --format=junit --output-file=$CIRCLE_TEST_REPORTS/www.xml
+          command: bundle exec rake test:proof_website -- --format=junit --output-file=$CIRCLE_TEST_REPORTS/www.xml
