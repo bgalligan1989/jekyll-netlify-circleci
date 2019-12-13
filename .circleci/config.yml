@@ -20,11 +20,9 @@ jobs:
       - run:
           name: Install UglifyCSS
           command: sudo npm install uglifycss -g
-      - run:
-          name: Install Bundler 2.x
-          command: gem install bundler -v "$(grep -A 1 "BUNDLED WITH" Gemfile.lock | tail -n 1)"
-          # command: gem update --system; 
-          # command: gem install bundler -v "~>2.0"
+      # - run:
+      #     name: Install Bundler 2.x
+      #     command: sudo gem install bundler -v "$(grep -A 1 "BUNDLED WITH" Gemfile.lock | tail -n 1)"
 
       - run:
           name: Create Self-Signed SSL Cert
@@ -32,10 +30,9 @@ jobs:
       - run:
           name: Install Jekyll
           command: cd $HOME/www; bundle install
-          #command: cd $HOME/www; bundle install
       - run:
           name: Build Web Site (Jekyll)
-          command: cd $HOME/www; export JEKYLL_ENV=production; nohup bundle exec rake html:serve_website -- --background --ssl-key jekyll-netlify-circleci.io.key --ssl-cert jekyll-netlify-circleci.io --nohup
+          command: cd $HOME/www; export JEKYLL_ENV=production; sudo nohup bundle exec rake html:serve_website -- --background --ssl-key jekyll-netlify-circleci.io.key --ssl-cert jekyll-netlify-circleci.io --nohup
       - run:
           name: Running HTML Proofer
-          command: bundle exec rake test:proof_website -- --format=junit --output-file=$CIRCLE_TEST_REPORTS/www.xml
+          command: sudo bundle exec rake test:proof_website -- --format=junit --output-file=$CIRCLE_TEST_REPORTS/www.xml
