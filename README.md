@@ -54,7 +54,7 @@ For help with templates, local development and other Jekyll related stuff, check
 
 ## Performance
 
-You can test the demo site's TTFB (Time To First Byte) at [testmysite.io](https://testmysite.io/5b50abe51f12b74b81dd5442/jekyll-netlify-circleci.netlify.com) -->
+You can test the demo site's TTFB (Time To First Byte) at [testmysite.io](https://testmysite.io/5b50abe51f12b74b81dd5442/jekyll-netlify-circleci.netlify.com)
 
 ## Getting started
 
