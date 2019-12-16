@@ -44,7 +44,7 @@ compress_html:
   clippings: all
   ignore:
     envs:
-      - development  
+      - development
 
 plugins:
   - jekyll-sitemap
@@ -78,11 +78,13 @@ kramdown:
 # The following items will not be processed.
 exclude:
   - README.md
+  - LICENSE
   - LICENSE.txt
   - netlify.toml
   - feed.xml
   - Gemfile
   - Gemfile.lock
+  - Rakefile
   - node_modules
   - vendor/bundle/
   - vendor/cache/
