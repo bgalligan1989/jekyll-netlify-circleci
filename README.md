@@ -27,6 +27,8 @@ with a Branch Protection Rule ( Your Repo >> Settings >> Branches >> Branch prot
 will still deploy your site to Netlify using the scheme described herein -- when the tests pass post-merge.
 Note that the protected branch should be the "production branch" specified in Netlify, which is master by default.
 
+![Branch Protection Setup](assets/screenshot-github-protected-branchrule.png)
+
 # About the Example Jekyll Site
 Notes from @danurbanowicz:
 
