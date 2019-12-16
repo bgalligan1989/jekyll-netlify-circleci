@@ -3,6 +3,7 @@ tmp
 .sass-cache
 .jekyll-metadata
 .users.yml
+nohup.out
 
 # Mac OS nonsense
 # General
