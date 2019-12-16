@@ -16,10 +16,13 @@ Standard Netlify CMS workflow works like this:
 
 Given the requirement that some sort of automated tests pass prior to publication -- this template raises errors if HTML is malformed or dead links are present --
 we need to disable the default netlify Auto-Deploy behavior and instead let CircleCI push the build if and only if the tests pass:
+1. [![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/fuery/jekyll-netlify-circleci&stack=cms)
+2. Disable your Netlify Auto-Deploy. See the Netlify docs on [Locked Deploys](https://docs.netlify.com/site-deploys/manage-deploys/#locked-deploys). Note that the netlify site administrator(s) can still override at ``` https://app.netlify.com/sites/(your-site-slug)/deploys ``` -- None of the magic herein can override that ability. Presumably your content creators do not have access to this interface. :-)
+3. Create a Netlify Build Hook url at ``` https://app.netlify.com/sites/(your-site-slug)/settings/deploys ```.
+4. Add your (probably new, if you used the deploy link above) github repo to CircleCI.
+5. Configure an environment variable in your CircleCI project and add the hash portion of the Build Hook URL created in Step 3, above. Alternatively, you may edit the .circleci/config.yml file herein to hardcode your Netlify Build Hook URL. This is so CircleCI can trigger the deploy.
 
-1. Disable your Netlify Auto-Deploy. See the Netlify docs on [Locked Deploys](https://docs.netlify.com/site-deploys/manage-deploys/#locked-deploys). Note that the netlify site administrator(s) can still override at ``` https://app.netlify.com/sites/(your-site-slug)/deploys ``` -- None of the magic herein can override that ability. Presumably your content creators do not have access to this interface. :-)
-2. Create a Netlify Build Hook url at ``` https://app.netlify.com/sites/(your-site-slug)/settings/deploys ```.
-3. Edit the .circleci/config.yml file herein to include your Netlify Build Hook URL. This is so CircleCI can trigger the deploy.
+![CircleCI Environement Variable](assets/screenshot-circleci-project-settings-environment-var.png)
 
 ### Suggestion (Optional)
 Configure your github repository
@@ -47,7 +50,7 @@ Based on Netlify's [Jekyll + Netlify CMS](https://github.com/netlify-templates/j
 
 For help with templates, local development and other Jekyll related stuff, check out the excellent [Jekyll Docs](https://jekyllrb.com/docs/home/).
 
-## [View Demo](https://jekyll-netlify-circleci.netlify.com/) -->
+## [View Demo](https://jekyll-netlify-circleci.netlify.com/)
 
 ## Performance
 
