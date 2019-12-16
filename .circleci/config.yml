@@ -35,7 +35,66 @@ jobs:
           command: cd $HOME/www; export JEKYLL_ENV=production; nohup bundle exec rake html:serve_website -- --background --ssl-key jekyll-netlify-circleci.io.key --ssl-cert jekyll-netlify-circleci.io --nohup
       - run:
           name: Running HTML Proofer
-          command: cd $HOME/www; mkdir tmp; bundle exec rake test:proof_website -- --format=junit --output-file=$HOME/tmp/www.xml
+          command: cd $HOME/www; mkdir -p tmp/html_proofer; bundle exec rake test:proof_website -- --format=junit --output-file=$HOME/www/tmp/html_proofer/www.xml
 
-      - store_artifacts:
-          path: ~/www/tmp
+      # @fuery: Food for thought: we're using the recommended circleci v2 "jobs" pattern here
+      #         (`build` loads a docker image, does stuff, cleans up, then `deploy` loads
+      #         its own docker image and goes to work), but it would technically shave 15s or so
+      #         off of our total build-and-deploy time if we just run the curl command in
+      #         the last step of our build workflow, here. Something like this
+      #         would probably do it. This scheme would not preclude using the netlify-cli to
+      #         manually deploy the just-built local copy either (see comments below)
+      # - run:
+      #     name: Deploy to Netlify via Build Hook
+      #  command: |
+      #        if [ "$CIRCLE_BRANCH" = "master" ]; then
+      #            curl -X POST -d {} << YOUR BUILD HOOK URL HERE >>
+      #        fi
+
+      # @fuery: Uncomment this if you want to save the content htmlproofer ran against.
+      #         May be useful if you want to cross-reference errors (and don't have a local dev environment handy for some reason)
+      # - store_artifacts:
+      #     path: ~/www/_html_proofer
+      - store_test_results:
+          path: ~/www/tmp/html_proofer
+
+
+      # @fuery: We are letting Netlify rebuild from master via Build Hook (or whatever the production branch is set to),
+      #         rather than deploying from our local build. Leaving this here for posterity. If your build cycles are
+      #         lengthy, it will save you some processing time to sort out how to get netlify-cli to deploy the site we just built here.
+      # - persist_to_workspace:
+      #     root: ~www
+      #     paths:
+      #       - _site
+  deploy:
+    docker:
+      # @fuery: We don't technically need node to just kick off a curl command, but you'll need node if you want to use netlify-cli.
+      - image: circleci/node:13.3.0-buster
+    # environment:
+      # NETLIFY_SITE_ID: YOUR_NETLIFY_SITE_ID
+      # NETLIFY_ACCESS_TOKEN: A_NETLIFY_ACCESS_TOKEN
+    steps:
+      # - attach_workspace:
+      #     at: ~www
+      # - run:
+      #     name: Install Netlify CLI
+      #     command: npm ...
+      - run:
+          name: Deploy Netlify via Build Hook
+          # Using an environment variable specified in CircleCI project settings so this works without publishing a real build hash here.
+          # If your repository is private, you may opt to hardcode the URL instead.
+          # command: curl -X POST -d {} << YOUR BUILD HOOK URL HERE >>
+          command: curl -X POST -d {} https://api.netlify.com/build_hooks/$NETLIFY_BUILD_HOOK
+          # command: curl -X POST -d {} https://api.netlify.com/build_hooks/5df7d2740d0894a4dce60a37
+
+workflows:
+  version: 2
+  test-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
