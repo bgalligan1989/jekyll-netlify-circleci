@@ -47,11 +47,11 @@ Based on Netlify's [Jekyll + Netlify CMS](https://github.com/netlify-templates/j
 
 For help with templates, local development and other Jekyll related stuff, check out the excellent [Jekyll Docs](https://jekyllrb.com/docs/home/).
 
-<!-- ## [View Demo](https://jekyll-netlify-boilerplate.netlify.com/) -->
+## [View Demo](https://jekyll-netlify-circleci.netlify.com/) -->
 
-<!-- ## Performance
+## Performance
 
-You can test the demo site's TTFB (Time To First Byte) at [testmysite.io](https://testmysite.io/5b50abe51f12b74b81dd5442/jekyll-netlify-boilerplate.netlify.com) -->
+You can test the demo site's TTFB (Time To First Byte) at [testmysite.io](https://testmysite.io/5b50abe51f12b74b81dd5442/jekyll-netlify-circleci.netlify.com) -->
 
 ## Getting started
 
